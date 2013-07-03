@@ -19,7 +19,7 @@ class ElasticSearchManager(NoSqlManager):
         NoSqlManager.__init__(self, namespace, url=url, data_dir=data_dir, lock_dir=lock_dir, **params)
 
     def open_connection(self, host, port):
-        self.es = rawes.Elastic('thrift://' + host + ":" + port)
+        self.es = rawes.Elastic('thrift://' + host + ":" + str(port))
 
     def __contains__(self, key):
         try:
