@@ -22,24 +22,38 @@ class ElasticSearchManager(NoSqlManager):
         self.es = rawes.Elastic('thrift://' + host + ":" + str(port))
 
     def __contains__(self, key):
+        print "contains"
         try:
+            print "contains - try"
             session=self.es.get('beaker_cache/session/' + self._format_key(key))
         except Exception:
+            print "contains - exception"
             return False
         if session!=None and session['exists']:
+            print "contains - if"
             return True
         else:
+            print "contains - else"
             return False
 
-    def set_value(self, key, value):        
+    def set_value(self, key, value):   
+        print "set_value"
         try:
+            print "set_value - try"
             session=self.es.get('beaker_cache/session/' + self._format_key(key))
+            print "set_value - before post"
             self.es.post('beaker_cache/session/'+self._format_key(key)+"/_update", data=value)
+            print "set_value - after post"
         except Exception:
+            print "set_value - exception"
             self.es.put('beaker_cache/session/'+self._format_key(key), data=value)
+            print "set_value - after exception"
 
     def __getitem__(self, key):
-        return self.es.get('beaker_cache/session/' + self._format_key(key))['_source']
+        print "getitem"
+        item = self.es.get('beaker_cache/session/' + self._format_key(key))['_source']
+        print "getitem return"
+        return item
 
     def __delitem__(self, key):        
         self.es.delete('beaker_cache/session/'+self._format_key(key))
