@@ -26,6 +26,7 @@ setup(name='beaker_extensions',
       redis = beaker_extensions.redis_:RedisManager
       tyrant = beaker_extensions.tyrant_:TokyoTyrantManager
       riak = beaker_extensions.riak_:RiakManager
+      elasticsearch = beaker_extensions.elasticsearch_:ElasticSearchManager
       dynomite = beaker_extensions.dynomite_:DynomiteManager
       ringo = beaker_extensions.ringo:RingoManager
       cassandra = beaker_extensions.cassandra:CassandraManager
