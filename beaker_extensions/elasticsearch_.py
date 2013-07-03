@@ -50,10 +50,14 @@ class ElasticSearchManager(NoSqlManager):
             print "set_value - after exception"
 
     def __getitem__(self, key):
-        print "getitem"
-        item = self.es.get('beaker_cache/session/' + self._format_key(key))['_source']
-        print "getitem return"
-        return item
+        try:
+            print "getitem try"
+            item = self.es.get('beaker_cache/session/' + self._format_key(key))['_source']
+            print "getitem returning"
+            return item
+        except Exception,e:
+            print "getitem exception"
+            return None
 
     def __delitem__(self, key):
         try:
