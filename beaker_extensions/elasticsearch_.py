@@ -55,8 +55,11 @@ class ElasticSearchManager(NoSqlManager):
         print "getitem return"
         return item
 
-    def __delitem__(self, key):        
-        self.es.delete('beaker_cache/session/'+self._format_key(key))
+    def __delitem__(self, key):
+        try:
+            self.es.delete('beaker_cache/session/'+self._format_key(key))
+        except Exception, e:
+            print "error deleting session"
 
     def _format_key(self, key):
         return 'beaker:%s:%s' % (self.namespace, key.replace(' ', '\302\267'))
