@@ -5,9 +5,9 @@ from beaker_extensions.nosql import Container
 from beaker_extensions.nosql import NoSqlManager
 
 try:
-    from pyelasticsearch import ElasticSearch
+    import rawes
 except ImportError:
-    raise InvalidCacheBackendError("Elastic Search cache backend requires the 'pyelasticsearch' library")
+    raise InvalidCacheBackendError("Elastic Search cache backend requires the 'rawes' library")
 
 log = logging.getLogger(__name__)
 
@@ -19,11 +19,11 @@ class ElasticSearchManager(NoSqlManager):
         NoSqlManager.__init__(self, namespace, url=url, data_dir=data_dir, lock_dir=lock_dir, **params)
 
     def open_connection(self, host, port):
-        self.es = ElasticSearch('http://'+host+':'+port+'/')
+        self.es = rawes.Elastic('thrift://' + host + ":" + port)
 
     def __contains__(self, key):
         try:
-            session=self.es.get('beaker_cache', 'session', self._format_key(key))
+            session=self.es.get('beaker_cache/session/' + self._format_key(key))
         except Exception:
             return False
         if session!=None and session['exists']:
@@ -31,14 +31,18 @@ class ElasticSearchManager(NoSqlManager):
         else:
             return False
 
-    def set_value(self, key, value):
-        self.es.index("beaker_cache", "session", value, id=self._format_key(key))
+    def set_value(self, key, value):        
+        try:
+            session=self.es.get('beaker_cache/session/' + self._format_key(key))
+            self.es.post('beaker_cache/session/'+self._format_key(key)+"/_update", data=value)
+        except Exception:
+            self.es.put('beaker_cache/session/'+self._format_key(key), data=value)
 
     def __getitem__(self, key):
-        return self.es.get('beaker_cache', 'session', self._format_key(key))['_source']
+        return self.es.get('beaker_cache/session/' + self._format_key(key))['_source']
 
-    def __delitem__(self, key):
-        self.es.delete("beaker_cache", "session", self._format_key(key))
+    def __delitem__(self, key):        
+        self.es.delete('beaker_cache/session/'+self._format_key(key))
 
     def _format_key(self, key):
         return 'beaker:%s:%s' % (self.namespace, key.replace(' ', '\302\267'))
