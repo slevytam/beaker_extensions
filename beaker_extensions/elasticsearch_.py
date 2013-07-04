@@ -32,11 +32,12 @@ class ElasticSearchManager(NoSqlManager):
             return False
 
     def set_value(self, key, value):   
-        try:
-            session=self.es.get('beaker_cache/session/' + self._format_key(key))
-            self.es.post('beaker_cache/session/'+self._format_key(key)+"/_update", data=value)
-        except Exception:
-            self.es.put('beaker_cache/session/'+self._format_key(key), data=value)
+        #try:
+            #session=self.es.get('beaker_cache/session/' + self._format_key(key))
+            #this line below is missing the doc field that needs to wrap value, easier to just reput
+            #self.es.post('beaker_cache/session/'+self._format_key(key)+"/_update", data=value)
+        #except Exception:
+        self.es.put('beaker_cache/session/'+self._format_key(key), data=value)
 
     def __getitem__(self, key):
         try:
