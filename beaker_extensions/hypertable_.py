@@ -38,6 +38,8 @@ class HypertableManager(NoSqlManager):
         self.client.hql_query(self.ns, delquery)
 
     def _format_key(self, key):
+        print "format_key", "key", key
+        print "self.namespace", self.namespace
         return 'beaker:%s:%s' % (self.namespace, key.replace(' ', '\302\267'))
 
     def do_remove(self):
