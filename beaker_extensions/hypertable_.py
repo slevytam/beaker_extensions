@@ -19,22 +19,23 @@ class HypertableManager(NoSqlManager):
 
     def open_connection(self, host, port):
         self.client = ThriftClient(str(host), int(port))
-        self.namespace = self.client.namespace_open('readible')
+        self.ns = self.client.ns_open('readible')
 
     def __contains__(self, key):
-        self.client.get_cell(self.namespace, 'beaker_cache', key, 'session').exists()
+        print "contains", "key", key
+        self.client.get_cell(self.ns, 'beaker_cache', key, 'session').exists()
 
     def set_value(self, key, value):
-        print "key", key
+        print "set_value", "key", key
         cells = [ [key,'session',"",json.dumps(value)] ]
-        self.client.set_cells_as_arrays(self.namespace, 'beaker_cache', cells)
+        self.client.set_cells_as_arrays(self.ns, 'beaker_cache', cells)
 
     def __getitem__(self, key):
-        return json.loads(self.client.get_cell(self.namespace, 'beaker_cache', key, 'session'))
+        return json.loads(self.client.get_cell(self.ns, 'beaker_cache', key, 'session'))
 
     def __delitem__(self, key):
         delquery="delete * from beaker_cache where row = '"+key+"'"
-        self.client.hql_query(self.namespace, delquery)
+        self.client.hql_query(self.ns, delquery)
 
     def _format_key(self, key):
         return 'beaker:%s:%s' % (self.namespace, key.replace(' ', '\302\267'))
