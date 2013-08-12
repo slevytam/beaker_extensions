@@ -24,19 +24,19 @@ class HypertableManager(NoSqlManager):
 
     def __contains__(self, key):
         print "contains", "key", key
-        self.client.get_cell(self.ns, 'beaker_cache', key, 'session').exists()
+        self.client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session').exists()
 
     def set_value(self, key, value):
         print "set_value", "key", key
-        cells = [ [key,'session',"",json.dumps(value)] ]
+        cells = [ [self._format_key(key),'session',"",json.dumps(value)] ]
         self.client.set_cells_as_arrays(self.ns, 'beaker_cache', cells)
 
     def __getitem__(self, key):
         print "getitem", "key", key
-        return json.loads(self.client.get_cell(self.ns, 'beaker_cache', key, 'session'))
+        return json.loads(self.client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session'))
 
     def __delitem__(self, key):
-        delquery="delete * from beaker_cache where row = '"+key+"'"
+        delquery="delete * from beaker_cache where row = '"+self._format_key(key)+"'"
         self.client.hql_query(self.ns, delquery)
 
     def _format_key(self, key):
