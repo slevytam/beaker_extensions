@@ -24,7 +24,13 @@ class HypertableManager(NoSqlManager):
 
     def __contains__(self, key):
         print "contains", "key", key
-        self.client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session').exists()
+        try:
+            value=client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session')
+            print "contains", "value", value
+            return True
+        except Exception, e:
+            print "contains", "exception", e
+            return False
 
     def set_value(self, key, value):
         print "set_value", "key", key
