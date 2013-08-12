@@ -7,6 +7,7 @@ from beaker_extensions.nosql import NoSqlManager
 try:
     from hypertable.thriftclient import *
     from hyperthrift.gen.ttypes import *
+    import json
 except ImportError:
     raise InvalidCacheBackendError("Hypertable cache backend requires the 'hypertable' library")
 
@@ -24,11 +25,11 @@ class HypertableManager(NoSqlManager):
         self.client.get_cell(self.namespace, 'beaker_cache', key, 'session').exists()
 
     def set_value(self, key, value):
-        cells = [ [key,'session',"",value] ]
+        cells = [ [key,'session',"",json.dumps(value)] ]
         self.client.set_cells_as_arrays(self.namespace, 'beaker_cache', cells)
 
     def __getitem__(self, key):
-        return self.client.get_cell(self.namespace, 'beaker_cache', key, 'session')
+        return json.loads(self.client.get_cell(self.namespace, 'beaker_cache', key, 'session'))
 
     def __delitem__(self, key):
         delquery="delete * from beaker_cache where row = '"+key+"'"
