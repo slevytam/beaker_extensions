@@ -19,7 +19,7 @@ class HypertableManager(NoSqlManager):
 
     def open_connection(self, host, port):
         self.client = ThriftClient(str(host), int(port))
-        self.ns = self.client.ns_open('readible')
+        self.ns = self.client.namespace_open('readible')
 
     def __contains__(self, key):
         print "contains", "key", key
