@@ -25,6 +25,7 @@ class HypertableManager(NoSqlManager):
         self.client.get_cell(self.namespace, 'beaker_cache', key, 'session').exists()
 
     def set_value(self, key, value):
+        print "key", key
         cells = [ [key,'session',"",json.dumps(value)] ]
         self.client.set_cells_as_arrays(self.namespace, 'beaker_cache', cells)
 
