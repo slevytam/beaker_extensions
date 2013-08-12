@@ -33,7 +33,10 @@ class HypertableManager(NoSqlManager):
 
     def __getitem__(self, key):
         print "getitem", "key", key
-        return json.loads(self.client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session'))
+        try:
+            return json.loads(self.client.get_cell(self.ns, 'beaker_cache', self._format_key(key), 'session'))
+        except Exception,e:
+            return None
 
     def __delitem__(self, key):
         delquery="delete * from beaker_cache where row = '"+self._format_key(key)+"'"
