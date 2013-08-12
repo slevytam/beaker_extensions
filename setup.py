@@ -27,6 +27,7 @@ setup(name='beaker_extensions',
       tyrant = beaker_extensions.tyrant_:TokyoTyrantManager
       riak = beaker_extensions.riak_:RiakManager
       elasticsearch = beaker_extensions.elasticsearch_:ElasticSearchManager
+      hypertable = beaker_extensions.hypertable_:HypertableManager
       dynomite = beaker_extensions.dynomite_:DynomiteManager
       ringo = beaker_extensions.ringo:RingoManager
       cassandra = beaker_extensions.cassandra:CassandraManager
