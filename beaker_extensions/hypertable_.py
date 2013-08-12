@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 
 class HypertableManager(NoSqlManager):
     def __init__(self, namespace, url=None, data_dir=None, lock_dir=None, **params):
+        print "init", "namespace", namespace
         NoSqlManager.__init__(self, namespace, url=url, data_dir=data_dir, lock_dir=lock_dir, **params)
 
     def open_connection(self, host, port):
@@ -31,6 +32,7 @@ class HypertableManager(NoSqlManager):
         self.client.set_cells_as_arrays(self.ns, 'beaker_cache', cells)
 
     def __getitem__(self, key):
+        print "getitem", "key", key
         return json.loads(self.client.get_cell(self.ns, 'beaker_cache', key, 'session'))
 
     def __delitem__(self, key):
